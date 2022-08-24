@@ -65,24 +65,23 @@
 #define DEFAULT_PID_OUTPUT_LIMIT      0.0
 
 
-typedef struct
-{
-  float desired;      //< set point
-  float error;        //< error
-  float prevError;    //< previous error
-  float integ;        //< integral
-  float deriv;        //< derivative
-  float kp;           //< proportional gain
-  float ki;           //< integral gain
-  float kd;           //< derivative gain
-  float outP;         //< proportional output (debugging)
-  float outI;         //< integral output (debugging)
-  float outD;         //< derivative output (debugging)
-  float iLimit;       //< integral limit, absolute value. '0' means no limit.
-  float outputLimit;  //< total PID output limit, absolute value. '0' means no limit.
-  float dt;           //< delta-time dt
-  lpf2pData dFilter;  //< filter for D term
-  bool enableDFilter; //< filter for D term enable flag
+typedef struct {
+    float desired;      //< set point
+    float error;        //< error
+    float prevError;    //< previous error
+    float integ;        //< integral
+    float deriv;        //< derivative
+    float kp;           //< proportional gain
+    float ki;           //< integral gain
+    float kd;           //< derivative gain
+    float outP;         //< proportional output (debugging)
+    float outI;         //< integral output (debugging)
+    float outD;         //< derivative output (debugging)
+    float iLimit;       //< integral limit, absolute value. '0' means no limit.
+    float outputLimit;  //< total PID output limit, absolute value. '0' means no limit.
+    float dt;           //< delta-time dt
+    lpf2pData dFilter;  //< filter for D term
+    bool enableDFilter; //< filter for D term enable flag
 } PidObject;
 
 /**
@@ -98,10 +97,10 @@ typedef struct
  * @param[in] cutoffFreq   Frequency to set the low pass filter cutoff at
  * @param[in] enableDFilter Enable setting for the D lowpass filter
  */
- void pidInit(PidObject* pid, const float desired, const float kp,
-              const float ki, const float kd, const float dt,
-              const float samplingRate, const float cutoffFreq,
-              bool enableDFilter);
+void pidInit(PidObject *pid, const float desired, const float kp,
+             const float ki, const float kd, const float dt,
+             const float samplingRate, const float cutoffFreq,
+             bool enableDFilter);
 
 /**
  * Set the integral limit for this PID in deg.
@@ -109,7 +108,7 @@ typedef struct
  * @param[in] pid   A pointer to the pid object.
  * @param[in] limit Pid integral swing limit.
  */
-void pidSetIntegralLimit(PidObject* pid, const float limit);
+void pidSetIntegralLimit(PidObject *pid, const float limit);
 
 /**
  * Reset the PID error values
@@ -117,7 +116,7 @@ void pidSetIntegralLimit(PidObject* pid, const float limit);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] limit Pid integral swing limit.
  */
-void pidReset(PidObject* pid);
+void pidReset(PidObject *pid);
 
 /**
  * Update the PID parameters.
@@ -128,7 +127,7 @@ void pidReset(PidObject* pid);
  *                        Set to False if pidSetError() has been used.
  * @return PID algorithm output
  */
-float pidUpdate(PidObject* pid, const float measured, const bool updateError);
+float pidUpdate(PidObject *pid, const float measured, const bool updateError);
 
 /**
  * Set a new set point for the PID to track.
@@ -136,19 +135,19 @@ float pidUpdate(PidObject* pid, const float measured, const bool updateError);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] angle The new set point
  */
-void pidSetDesired(PidObject* pid, const float desired);
+void pidSetDesired(PidObject *pid, const float desired);
 
 /**
  * Set a new set point for the PID to track.
  * @return The set point
  */
-float pidGetDesired(PidObject* pid);
+float pidGetDesired(PidObject *pid);
 
 /**
  * Find out if PID is active
  * @return TRUE if active, FALSE otherwise
  */
-bool pidIsActive(PidObject* pid);
+bool pidIsActive(PidObject *pid);
 
 /**
  * Set a new error. Use if a special error calculation is needed.
@@ -156,7 +155,7 @@ bool pidIsActive(PidObject* pid);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] error The new error
  */
-void pidSetError(PidObject* pid, const float error);
+void pidSetError(PidObject *pid, const float error);
 
 /**
  * Set a new proportional gain for the PID.
@@ -164,7 +163,7 @@ void pidSetError(PidObject* pid, const float error);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] kp    The new proportional gain
  */
-void pidSetKp(PidObject* pid, const float kp);
+void pidSetKp(PidObject *pid, const float kp);
 
 /**
  * Set a new integral gain for the PID.
@@ -172,7 +171,7 @@ void pidSetKp(PidObject* pid, const float kp);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] ki    The new integral gain
  */
-void pidSetKi(PidObject* pid, const float ki);
+void pidSetKi(PidObject *pid, const float ki);
 
 /**
  * Set a new derivative gain for the PID.
@@ -180,7 +179,7 @@ void pidSetKi(PidObject* pid, const float ki);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] kd    The derivative gain
  */
-void pidSetKd(PidObject* pid, const float kd);
+void pidSetKd(PidObject *pid, const float kd);
 
 /**
  * Set a new dt gain for the PID. Defaults to IMU_UPDATE_DT upon construction
@@ -188,7 +187,7 @@ void pidSetKd(PidObject* pid, const float kd);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] dt    Delta time
  */
-void pidSetDt(PidObject* pid, const float dt);
+void pidSetDt(PidObject *pid, const float dt);
 
 /**
  * Reset the Dfilter and set cutoff frequency
@@ -198,7 +197,7 @@ void pidSetDt(PidObject* pid, const float dt);
  * @param[in] cutoffFreq   Frequency to set the low pass filter cutoff at
  * @param[in] enableDFilter Enable setting for the D lowpass filter
 */
-void filterReset(PidObject* pid, const float samplingRate, const float cutoffFreq, bool enableDFilter);
+void filterReset(PidObject *pid, const float samplingRate, const float cutoffFreq, bool enableDFilter);
 
 #endif /* PID_H_ */
   
