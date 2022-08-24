@@ -81,13 +81,21 @@ PidObject pidYaw = {
         .kd = PID_YAW_KD,
 };
 
-static int16_t rollOutput;
-static int16_t pitchOutput;
-static int16_t yawOutput;
+// fed to the motor
+// should be accessible by other units
+int16_t rollOutput;
+int16_t pitchOutput;
+int16_t yawOutput;
 
-static bool isInit;
+// fed to roll/pitch/yaw pid
+// accessible when need to debug
+static float rollRateDesired;
+static float pitchRateDesired;
+static float yawRateDesired;
 
-void attitudeControllerInit(const float updateDt) {
+static bool isInit = false;
+
+void attitudeControllerInit(float updateDt) {
     if (isInit)
         return;
 
@@ -122,8 +130,7 @@ bool attitudeControllerTest() {
 }
 
 void attitudeControllerCorrectRatePID(
-        float rollRateActual, float pitchRateActual, float yawRateActual,
-        float rollRateDesired, float pitchRateDesired, float yawRateDesired) {
+        float rollRateActual, float pitchRateActual, float yawRateActual) {
     pidSetDesired(&pidRollRate, rollRateDesired);
     rollOutput = saturateSignedInt16(pidUpdate(&pidRollRate, rollRateActual, true));
 
@@ -136,14 +143,13 @@ void attitudeControllerCorrectRatePID(
 
 void attitudeControllerCorrectAttitudePID(
         float eulerRollActual, float eulerPitchActual, float eulerYawActual,
-        float eulerRollDesired, float eulerPitchDesired, float eulerYawDesired,
-        float *rollRateDesired, float *pitchRateDesired, float *yawRateDesired) {
+        float eulerRollDesired, float eulerPitchDesired, float eulerYawDesired) {
     pidSetDesired(&pidRoll, eulerRollDesired);
-    *rollRateDesired = pidUpdate(&pidRoll, eulerRollActual, true);
+    rollRateDesired = pidUpdate(&pidRoll, eulerRollActual, true);
 
     // Update PID for pitch axis
     pidSetDesired(&pidPitch, eulerPitchDesired);
-    *pitchRateDesired = pidUpdate(&pidPitch, eulerPitchActual, true);
+    pitchRateDesired = pidUpdate(&pidPitch, eulerPitchActual, true);
 
     // Update PID for yaw axis
     float yawError;
@@ -153,7 +159,7 @@ void attitudeControllerCorrectAttitudePID(
     else if (yawError < -180.0f)
         yawError += 360.0f;
     pidSetError(&pidYaw, yawError);
-    *yawRateDesired = pidUpdate(&pidYaw, eulerYawActual, false);
+    yawRateDesired = pidUpdate(&pidYaw, eulerYawActual, false);
 }
 
 void attitudeControllerResetRollAttitudePID(void) {

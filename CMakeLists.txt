@@ -68,7 +68,7 @@ add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 
 
 #luchenxu
-target_link_libraries(${PROJECT_NAME}.elf USER_LIB)
+target_link_libraries(${PROJECT_NAME}.elf USER_LIB CONTROL_LIB)
 
 set(HEX_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hex)
 set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)

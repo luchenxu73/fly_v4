@@ -31,7 +31,7 @@
 #include <stdint.h>
 
 
-void attitudeControllerInit(const float updateDt);
+void attitudeControllerInit(float updateDt);
 
 bool attitudeControllerTest(void);
 
@@ -43,16 +43,14 @@ bool attitudeControllerTest(void);
  */
 void attitudeControllerCorrectAttitudePID(
         float eulerRollActual, float eulerPitchActual, float eulerYawActual,
-        float eulerRollDesired, float eulerPitchDesired, float eulerYawDesired,
-        float *rollRateDesired, float *pitchRateDesired, float *yawRateDesired);
+        float eulerRollDesired, float eulerPitchDesired, float eulerYawDesired);
 
 /**
  * Make the controller run an update of the rate PID. The output is
  * the actuator force.
  */
 void attitudeControllerCorrectRatePID(
-        float rollRateActual, float pitchRateActual, float yawRateActual,
-        float rollRateDesired, float pitchRateDesired, float yawRateDesired);
+        float rollRateActual, float pitchRateActual, float yawRateActual);
 
 /**
  * Reset controller roll attitude PID
