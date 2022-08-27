@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>  // For memcpy
 
-//created by luchenxu
+// Screenbuffer
+static uint8_t SSD1306_Buffer[SSD1306_BUFFER_SIZE];
+
 #if defined(SSD1306_DRAW_ASYNC)
 bool render_finished = true;
 #endif
@@ -54,12 +56,34 @@ void ssd1306_WriteData(uint8_t *buffer, size_t buff_size) {
 }
 
 #if defined(SSD1306_DRAW_ASYNC)
-void ssd1306_WriteDataAsync(uint8_t *buffer, size_t buff_size) {
+void ssd1306WriteDataAsync(uint8_t *buffer, size_t buff_size) {
 
+
+    // start a transmission session.
     HAL_GPIO_WritePin(SSD1306_CS_Port, SSD1306_CS_Pin, GPIO_PIN_RESET); // select OLED
     HAL_GPIO_WritePin(SSD1306_DC_Port, SSD1306_DC_Pin, GPIO_PIN_SET); // data
     HAL_SPI_Transmit_DMA(&SSD1306_SPI_PORT, buffer, buff_size);
+    // indicate the transmission is finished.
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
     HAL_GPIO_WritePin(SSD1306_CS_Port, SSD1306_CS_Pin, GPIO_PIN_SET); // un-select OLED
+}
+void ssd1306UpdateScreenAsync(void)
+{
+
+        // Write data to each page of RAM. Number of pages
+        // depends on the screen height:
+        //
+        //  * 32px   ==  4 pages
+        //  * 64px   ==  8 pages
+        //  * 128px  ==  16 pages
+        for (uint8_t i = 0; i < SSD1306_HEIGHT / 8; i++) {
+            ssd1306_WriteCommand(0xB0 + i); // Set the current RAM page address.
+            ssd1306_WriteCommand(0x00 + SSD1306_X_OFFSET_LOWER);
+            ssd1306_WriteCommand(0x10 + SSD1306_X_OFFSET_UPPER);
+            ssd1306WriteDataAsync(&SSD1306_Buffer[SSD1306_WIDTH * i], SSD1306_WIDTH);
+        }
+
 }
 #endif
 
@@ -68,8 +92,7 @@ void ssd1306_WriteDataAsync(uint8_t *buffer, size_t buff_size) {
 #endif
 
 
-// Screenbuffer
-static uint8_t SSD1306_Buffer[SSD1306_BUFFER_SIZE];
+
 
 // Screen object
 static SSD1306_t SSD1306;

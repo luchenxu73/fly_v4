@@ -50,7 +50,6 @@
 #define SSD1306_INCLUDE_FONT_16x26
 
 #define SSD1306_DRAW_ASYNC
-#define SSD1306_USE_RTOS
 
 // The width of the screen can be set using this
 // define. The default value is 128.

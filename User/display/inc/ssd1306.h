@@ -18,14 +18,13 @@ _BEGIN_STD_C
 
 // created by luchenxu
 // the flag indicates the render status when use dma.
-#ifdef SSD1306_USE_RTOS
+#if defined(SSD1306_DRAW_ASYNC)
+
 #include "cmsis_os.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#endif
 
-#if defined(SSD1306_USE_DMA) || defined(SSD1306_USE_RTOS) || defined(SSD1306_DRAW_ASYNC)
-extern bool render_finished ;
+extern bool render_finished;
 #endif
 
 #if defined(STM32F0)
@@ -184,7 +183,7 @@ void ssd1306_DrawBitmap(uint8_t x, uint8_t y, const unsigned char *bitmap, uint8
 // created by luchenxu
 // DMA version of display flush
 void ssd1306UpdateScreenAsync(void);
-
+void ssd1306WriteDataAsync(uint8_t *buffer, size_t buff_size);
 
 /**
  * @brief Sets the contrast of the display.
