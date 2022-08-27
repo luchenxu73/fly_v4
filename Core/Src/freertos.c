@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "user_tasks.h"
+#include "blink_task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,12 +45,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-osThreadId_t ledTaskHandle;
-const osThreadAttr_t leb_blink_attributes = {
-        .name = "blinkTask",
-        .stack_size = 128 * 4,
-        .priority = (osPriority_t) osPriorityNormal,
-};
+
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -118,8 +113,7 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
-//    xTaskCreate(ledBlinkTask,"Blink",1024,NULL,2,NULL);
-    ledTaskHandle = osThreadNew(ledBlinkTask, NULL, &leb_blink_attributes);
+    ledBlinkTaskCreate();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
