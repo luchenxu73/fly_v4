@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.22)
+include_directories(inc)
+file(GLOB TASK_SRC ./src/*.c)
+#aux_source_directory(./src USER_SRC)
+add_library(TASK_LIB ${TASK_SRC})
