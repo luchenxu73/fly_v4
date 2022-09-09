@@ -183,7 +183,10 @@ void ssd1306_DrawBitmap(uint8_t x, uint8_t y, const unsigned char *bitmap, uint8
 // created by luchenxu
 // DMA version of display flush
 void ssd1306UpdateScreenAsync(void);
+
 void ssd1306WriteDataAsync(uint8_t *buffer, size_t buff_size);
+
+void ssd1306Printf(uint8_t x, uint8_t y, const char *fmt, ...);
 
 /**
  * @brief Sets the contrast of the display.

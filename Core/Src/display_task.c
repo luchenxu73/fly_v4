@@ -9,7 +9,7 @@ osThreadId_t displayTaskHandle = NULL;
 const osThreadAttr_t display_attributes = {
         .name = "Display Task",
         .stack_size = 128 * 4,
-        .priority = (osPriority_t) osPriorityAboveNormal,
+        .priority = (osPriority_t) osPriorityBelowNormal,
 };
 
 void displayTask(void *parg);
@@ -29,9 +29,8 @@ void displayTask(void *parg) {
         ssd1306_SetCursor(0, a);
         ssd1306_WriteString("hello", Font_6x8, White);
 //        ssd1306_UpdateScreen();
-
         ssd1306UpdateScreenAsync();
         a += 8;
-        osDelay(pdMS_TO_TICKS(100));
+        osDelay(pdMS_TO_TICKS(1000));
     }
 }

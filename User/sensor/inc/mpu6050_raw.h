@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stm32f1xx_hal.h"
 
-#define I2CHandle hi2c2
+#define I2CHandle hi2c1
 extern I2C_HandleTypeDef I2CHandle;
 
 // 定义MPU6050内部地址

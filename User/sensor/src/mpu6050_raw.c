@@ -81,7 +81,7 @@ void mpu6050ReadFilteredData(int16_t *gx, int16_t *gy, int16_t *gz, int16_t *ax,
 
     cur_idx = (cur_idx == SMOOTH_WINDOW_SIZE - 1 ? 0 : cur_idx + 1);
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < 3; i++)
     {
         int32_t sum = 0;
         for (j = 0; j < SMOOTH_WINDOW_SIZE; j++)

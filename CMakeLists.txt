@@ -58,6 +58,7 @@ add_subdirectory(User)
 include_directories(User/tasks/inc)
 include_directories(User/display/inc)
 include_directories(User/drone_control/inc)
+include_directories(User/sensor/inc)
 
 file(GLOB_RECURSE SOURCES "Core/*.*" "Middlewares/*.*" "Drivers/*.*")
 
@@ -71,7 +72,7 @@ add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 
 
 #luchenxu
-target_link_libraries(${PROJECT_NAME}.elf USER_LIB CONTROL_LIB DISPLAY_LIB)
+target_link_libraries(${PROJECT_NAME}.elf USER_LIB CONTROL_LIB DISPLAY_LIB SENSOR_LIB)
 
 set(HEX_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hex)
 set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)

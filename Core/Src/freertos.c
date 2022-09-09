@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "blink_task.h"
 #include "display_task.h"
+#include "attitude_task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -116,6 +117,7 @@ void MX_FREERTOS_Init(void) {
     /* add threads, ... */
     ledBlinkTaskCreate();
     displayTaskCreate();
+    mpu6050TaskCreate();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */

@@ -2,10 +2,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>  // For memcpy
-
+#include <stdarg.h>
+#include <stdio.h>
 // Screenbuffer
 static uint8_t SSD1306_Buffer[SSD1306_BUFFER_SIZE];
-
+static char printf_buf[50];
 #if defined(SSD1306_DRAW_ASYNC)
 bool render_finished = true;
 #endif
@@ -56,6 +57,7 @@ void ssd1306_WriteData(uint8_t *buffer, size_t buff_size) {
 }
 
 #if defined(SSD1306_DRAW_ASYNC)
+
 void ssd1306WriteDataAsync(uint8_t *buffer, size_t buff_size) {
 
 
@@ -66,32 +68,35 @@ void ssd1306WriteDataAsync(uint8_t *buffer, size_t buff_size) {
     // indicate the transmission is finished.
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
+    HAL_SPI_StateTypeDef state = HAL_SPI_GetState(&SSD1306_SPI_PORT);
+    while (HAL_SPI_GetState(&SSD1306_SPI_PORT) == HAL_SPI_STATE_BUSY) { ;
+    }
+
     HAL_GPIO_WritePin(SSD1306_CS_Port, SSD1306_CS_Pin, GPIO_PIN_SET); // un-select OLED
 }
-void ssd1306UpdateScreenAsync(void)
-{
 
-        // Write data to each page of RAM. Number of pages
-        // depends on the screen height:
-        //
-        //  * 32px   ==  4 pages
-        //  * 64px   ==  8 pages
-        //  * 128px  ==  16 pages
-        for (uint8_t i = 0; i < SSD1306_HEIGHT / 8; i++) {
-            ssd1306_WriteCommand(0xB0 + i); // Set the current RAM page address.
-            ssd1306_WriteCommand(0x00 + SSD1306_X_OFFSET_LOWER);
-            ssd1306_WriteCommand(0x10 + SSD1306_X_OFFSET_UPPER);
-            ssd1306WriteDataAsync(&SSD1306_Buffer[SSD1306_WIDTH * i], SSD1306_WIDTH);
-        }
+void ssd1306UpdateScreenAsync(void) {
+
+    // Write data to each page of RAM. Number of pages
+    // depends on the screen height:
+    //
+    //  * 32px   ==  4 pages
+    //  * 64px   ==  8 pages
+    //  * 128px  ==  16 pages
+    for (uint8_t i = 0; i < SSD1306_HEIGHT / 8; i++) {
+        ssd1306_WriteCommand(0xB0 + i); // Set the current RAM page address.
+        ssd1306_WriteCommand(0x00 + SSD1306_X_OFFSET_LOWER);
+        ssd1306_WriteCommand(0x10 + SSD1306_X_OFFSET_UPPER);
+        ssd1306WriteDataAsync(&SSD1306_Buffer[SSD1306_WIDTH * i], SSD1306_WIDTH);
+    }
 
 }
+
 #endif
 
 #else
 #error "You should define SSD1306_USE_SPI or SSD1306_USE_I2C macro"
 #endif
-
-
 
 
 // Screen object
@@ -113,7 +118,8 @@ void ssd1306_Init(void) {
     ssd1306_Reset();
 
     // Wait for the screen to boot
-    HAL_Delay(100);
+//    HAL_Delay(100);
+    osDelay(100);
 
     // Init OLED
     ssd1306_SetDisplayOn(0); //display off
@@ -501,4 +507,14 @@ void ssd1306_SetDisplayOn(const uint8_t on) {
 
 uint8_t ssd1306_GetDisplayOn() {
     return SSD1306.DisplayOn;
+}
+
+void ssd1306Printf(uint8_t x, uint8_t y, const char *fmt, ...) {
+    va_list arg_list;
+    va_start(arg_list,fmt);
+    vsprintf(printf_buf,fmt,arg_list);
+    va_end(arg_list);
+    ssd1306_SetCursor(x,y);
+    ssd1306_WriteString(printf_buf,Font_6x8,White);
+    ssd1306UpdateScreenAsync();
 }

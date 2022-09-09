@@ -165,6 +165,7 @@ void DMA1_Channel3_IRQHandler(void) {
 
     BaseType_t higher_priority_task_woken = pdFALSE;
     vTaskNotifyGiveFromISR((TaskHandle_t) displayTaskHandle, &higher_priority_task_woken);
+//    higher_priority_task_woken;
 //    portYIELD_FROM_ISR(higher_priority_task_woken);
 
     /* USER CODE END DMA1_Channel3_IRQn 1 */
