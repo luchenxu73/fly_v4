@@ -4,6 +4,7 @@
 #include <string.h>  // For memcpy
 #include <stdarg.h>
 #include <stdio.h>
+
 // Screenbuffer
 static uint8_t SSD1306_Buffer[SSD1306_BUFFER_SIZE];
 static char printf_buf[50];
@@ -35,9 +36,11 @@ void ssd1306_Reset(void) {
 
     // Reset the OLED
     HAL_GPIO_WritePin(SSD1306_Reset_Port, SSD1306_Reset_Pin, GPIO_PIN_RESET);
-    HAL_Delay(10);
+//    HAL_Delay(10);
+    osDelay(10);
     HAL_GPIO_WritePin(SSD1306_Reset_Port, SSD1306_Reset_Pin, GPIO_PIN_SET);
-    HAL_Delay(10);
+//    HAL_Delay(10);
+    osDelay(10);
 }
 
 // Send a byte to the command register
@@ -68,9 +71,9 @@ void ssd1306WriteDataAsync(uint8_t *buffer, size_t buff_size) {
     // indicate the transmission is finished.
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-    HAL_SPI_StateTypeDef state = HAL_SPI_GetState(&SSD1306_SPI_PORT);
-    while (HAL_SPI_GetState(&SSD1306_SPI_PORT) == HAL_SPI_STATE_BUSY) { ;
-    }
+//    HAL_SPI_StateTypeDef state = HAL_SPI_GetState(&SSD1306_SPI_PORT);
+//    while (HAL_SPI_GetState(&SSD1306_SPI_PORT) == HAL_SPI_STATE_BUSY) { ;
+//    }
 
     HAL_GPIO_WritePin(SSD1306_CS_Port, SSD1306_CS_Pin, GPIO_PIN_SET); // un-select OLED
 }
@@ -89,6 +92,21 @@ void ssd1306UpdateScreenAsync(void) {
         ssd1306_WriteCommand(0x10 + SSD1306_X_OFFSET_UPPER);
         ssd1306WriteDataAsync(&SSD1306_Buffer[SSD1306_WIDTH * i], SSD1306_WIDTH);
     }
+//    ssd1306_WriteCommand(0x20);
+//    ssd1306_WriteCommand(0x00);
+//
+//    ssd1306_WriteCommand(0x21);
+//    ssd1306_WriteCommand(0x00);
+//    ssd1306_WriteCommand(0x7f);
+//
+//    ssd1306_WriteCommand(0x22);
+//    ssd1306_WriteCommand(0x00);
+//    ssd1306_WriteCommand(0x07);
+//
+////    ssd1306_WriteCommand(0xB0);
+////    ssd1306_WriteCommand(0x00 + SSD1306_X_OFFSET_LOWER);
+////    ssd1306_WriteCommand(0x10 + SSD1306_X_OFFSET_UPPER);
+//    ssd1306WriteDataAsync(&SSD1306_Buffer[0 ], SSD1306_BUFFER_SIZE);
 
 }
 
@@ -511,10 +529,11 @@ uint8_t ssd1306_GetDisplayOn() {
 
 void ssd1306Printf(uint8_t x, uint8_t y, const char *fmt, ...) {
     va_list arg_list;
-    va_start(arg_list,fmt);
-    vsprintf(printf_buf,fmt,arg_list);
+    va_start(arg_list, fmt);
+    vsprintf(printf_buf, fmt, arg_list);
     va_end(arg_list);
-    ssd1306_SetCursor(x,y);
-    ssd1306_WriteString(printf_buf,Font_6x8,White);
+    ssd1306_SetCursor(x, y);
+    ssd1306_WriteString(printf_buf, Font_6x8, White);
     ssd1306UpdateScreenAsync();
+//    ssd1306_UpdateScreen();
 }

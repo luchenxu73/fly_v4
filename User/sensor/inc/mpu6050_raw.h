@@ -68,13 +68,33 @@ extern I2C_HandleTypeDef I2CHandle;
 #define MPU6050_SLEEP (0x01 << 6)
 #define MPU6050_TMP_DIS (0x01 << 3)
 
+
+typedef struct GyroscopeData {
+    volatile int16_t gx;
+    volatile int16_t gy;
+    volatile int16_t gz;
+} GyroscopeData;
+
+typedef struct AccelerometerData {
+    volatile int16_t ax;
+    volatile int16_t ay;
+    volatile int16_t az;
+} AccelerometerData;
+
+extern GyroscopeData gyro;
+extern AccelerometerData acc;
+
 void mpu6050WriteByte(uint8_t add, uint8_t reg, uint8_t dat);
+
 uint8_t mpu6050ReadByte(uint8_t add, uint8_t reg);
+
 void mpu6050ReadBuffer(uint8_t add, uint8_t reg, uint8_t *dat, uint32_t len);
 
-void mpu6050Init(void);
-void mpu6050GetRawData(int16_t *gx, int16_t *gy, int16_t *gz, int16_t *ax, int16_t *ay, int16_t *az);
 
-void mpu6050ReadFilteredData(int16_t *gx, int16_t *gy, int16_t *gz, int16_t *ax, int16_t *ay, int16_t *az);
+void mpu6050Init(void);
+
+void mpu6050GetRawData(GyroscopeData* gyro,AccelerometerData* acc);
+
+void mpu6050ReadFilteredData(GyroscopeData* gyro,AccelerometerData* acc);
 
 #endif

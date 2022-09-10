@@ -3,7 +3,7 @@
 //
 #include "display_task.h"
 #include "ssd1306.h"
-
+#include "mpu6050_raw.h"
 
 osThreadId_t displayTaskHandle = NULL;
 const osThreadAttr_t display_attributes = {
@@ -23,14 +23,15 @@ void displayTask(void *parg) {
     ssd1306_Init();
     ssd1306_Fill(Black);
 //    ssd1306_UpdateScreen();
-    ssd1306UpdateScreenAsync();
+//    ssd1306UpdateScreenAsync();
     int a = 0;
     while (1) {
-        ssd1306_SetCursor(0, a);
-        ssd1306_WriteString("hello", Font_6x8, White);
+        ssd1306Printf(0,0,"%d",gyro.gx);
+//        ssd1306_SetCursor(0, a);
+//        ssd1306_WriteString("hello", Font_6x8, White);
 //        ssd1306_UpdateScreen();
-        ssd1306UpdateScreenAsync();
+//        ssd1306UpdateScreenAsync();
         a += 8;
-        osDelay(pdMS_TO_TICKS(1000));
+        osDelay(pdMS_TO_TICKS(10));
     }
 }

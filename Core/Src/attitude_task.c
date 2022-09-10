@@ -16,9 +16,10 @@ void mpu6050TaskCreate(void) {
 }
 void mpu6050UpdateTask()
 {
-//    mpu6050Init();
+    mpu6050Init();
     while (1)
     {
+        mpu6050GetRawData(&gyro,&acc);
         osDelay(2);
     }
 
