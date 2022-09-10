@@ -1,5 +1,11 @@
 #include "mpu6050_raw.h"
 
+#if defined(MPU6050_ENABLE_ASYNC)
+#include "cmsis_os.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#endif
+
 #define SMOOTH_WINDOW_SIZE 8
 // #define AXIS_MAX 6
 int16_t smooth_buffer[3][SMOOTH_WINDOW_SIZE];
@@ -21,6 +27,13 @@ uint8_t mpu6050ReadByte(uint8_t add, uint8_t reg) {
 void mpu6050ReadBuffer(uint8_t add, uint8_t reg, uint8_t *dat, uint32_t len) {
     HAL_I2C_Mem_Read(&I2CHandle, add, reg, I2C_MEMADD_SIZE_8BIT, dat, len, HAL_MAX_DELAY);
 }
+
+#if defined(MPU6050_ENABLE_ASYNC)
+void mpu6050ReadBufferAsync(uint8_t add, uint8_t reg, uint8_t *dat, uint32_t len) {
+    HAL_I2C_Mem_Read_DMA(&I2CHandle, add, reg, I2C_MEMADD_SIZE_8BIT, dat, len);
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+}
+#endif
 
 void mpu6050Init() {
     uint8_t dummy_read_time;
@@ -69,6 +82,25 @@ void mpu6050GetRawData(GyroscopeData *gyro, AccelerometerData *acc) {
     acc->ay = (int16_t) ((int16_t) buffer[2] << 8 | buffer[3]);
     acc->az = (int16_t) ((int16_t) buffer[4] << 8 | buffer[5]);
 }
+#if defined(MPU6050_ENABLE_ASYNC)
+void mpu6050GetRawDataAsync(GyroscopeData *gyro, AccelerometerData *acc) {
+    uint8_t buffer[6];
+//    mpu6050ReadBuffer(MPU6050_DEV_ADDR, MPU6050_REG_GYRO_XOUT_H, buffer, 6);
+    mpu6050ReadBufferAsync(MPU6050_DEV_ADDR, MPU6050_REG_GYRO_XOUT_H, buffer, 6);
+
+    gyro->gx = (int16_t) ((int16_t) buffer[0] << 8 | buffer[1]);
+    gyro->gy = (int16_t) ((int16_t) buffer[2] << 8 | buffer[3]);
+    gyro->gz = (int16_t) ((int16_t) buffer[4] << 8 | buffer[5]);
+
+//    mpu6050ReadBuffer(MPU6050_DEV_ADDR, MPU6050_REG_ACCEL_XOUT_H, buffer, 6);
+    mpu6050ReadBufferAsync(MPU6050_DEV_ADDR, MPU6050_REG_ACCEL_XOUT_H, buffer, 6);
+
+    acc->ax = (int16_t) ((int16_t) buffer[0] << 8 | buffer[1]);
+    acc->ay = (int16_t) ((int16_t) buffer[2] << 8 | buffer[3]);
+    acc->az = (int16_t) ((int16_t) buffer[4] << 8 | buffer[5]);
+}
+#endif
+
 
 void mpu6050ReadFilteredData(GyroscopeData *gyro, AccelerometerData *acc) {
     uint8_t i, j;

@@ -7,6 +7,8 @@
 #define I2CHandle hi2c1
 extern I2C_HandleTypeDef I2CHandle;
 
+#define MPU6050_ENABLE_ASYNC
+
 // 定义MPU6050内部地址
 #define MPU6050_DEV_ADDR 0x68 << 1 // IIC写入时的地址字节数据，+1为读取
 
@@ -93,8 +95,17 @@ void mpu6050ReadBuffer(uint8_t add, uint8_t reg, uint8_t *dat, uint32_t len);
 
 void mpu6050Init(void);
 
-void mpu6050GetRawData(GyroscopeData* gyro,AccelerometerData* acc);
+void mpu6050GetRawData(GyroscopeData *gyro, AccelerometerData *acc);
 
-void mpu6050ReadFilteredData(GyroscopeData* gyro,AccelerometerData* acc);
+void mpu6050ReadFilteredData(GyroscopeData *gyro, AccelerometerData *acc);
+
+
+#if defined(MPU6050_ENABLE_ASYNC)
+
+void mpu6050ReadBufferAsync(uint8_t add, uint8_t reg, uint8_t *dat, uint32_t len);
+
+void mpu6050GetRawDataAsync(GyroscopeData *gyro, AccelerometerData *acc);
+
+#endif
 
 #endif
