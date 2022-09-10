@@ -4,7 +4,8 @@
 #include "display_task.h"
 #include "ssd1306.h"
 #include "mpu6050_raw.h"
-
+//#include "Fusion.h"
+#include "attitude_task.h"
 osThreadId_t displayTaskHandle = NULL;
 const osThreadAttr_t display_attributes = {
         .name = "Display Task",
@@ -26,7 +27,13 @@ void displayTask(void *parg) {
 //    ssd1306UpdateScreenAsync();
     int a = 0;
     while (1) {
-        ssd1306Printf(0,0,"%d",gyro.gx);
+//        ssd1306_SetCursor(0, a);
+
+//        ssd1306Printf(0,0,"%d %u",gyro.gx,getRunTimeCounterValue());
+        ssd1306Printf(0,8,"%d",(int )(euler.angle.pitch*100));
+//        ssd1306Printf(64,8,"%.3f",euler.angle.roll);
+
+
 //        ssd1306_SetCursor(0, a);
 //        ssd1306_WriteString("hello", Font_6x8, White);
 //        ssd1306_UpdateScreen();

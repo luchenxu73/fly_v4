@@ -161,6 +161,11 @@ standard names. */
 
 /* USER CODE BEGIN 2 */
 /* Definitions needed when configGENERATE_RUN_TIME_STATS is on */
+
+//extern volatile uint32_t cpu_time;
+//#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS (cpu_time=0L)
+//#define portGET_RUN_TIME_COUNTER_VALUE getRunTimeCounterValue
+
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS configureTimerForRunTimeStats
 #define portGET_RUN_TIME_COUNTER_VALUE getRunTimeCounterValue
 /* USER CODE END 2 */
