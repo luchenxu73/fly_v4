@@ -75,13 +75,15 @@ unsigned long getRunTimeCounterValue(void);
 /* Functions needed when configGENERATE_RUN_TIME_STATS is on */
 __weak void configureTimerForRunTimeStats(void)
 {
-
+    cpu_time = 0UL;
 }
 
 __weak unsigned long getRunTimeCounterValue(void)
 {
 return 0;
 }
+
+
 /* USER CODE END 1 */
 
 /**
@@ -119,7 +121,8 @@ void MX_FREERTOS_Init(void) {
     ledBlinkTaskCreate();
     displayTaskCreate();
     mpu6050TaskCreate();
-//    cpuInfoTaskCreate();
+    attitudeTaskCreate();
+    cpuInfoTaskCreate();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */

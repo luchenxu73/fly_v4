@@ -11,7 +11,10 @@
 #include "cmsis_os.h"
 
 extern TaskHandle_t cpuStaticInfoThread;
-extern uint32_t cpu_time;
+extern volatile uint32_t cpu_time;
 void cpuInfoTaskCreate(void);
 void cpuInfoTask(void * argument);
+
+//void configureTimerForRunTimeStats(void);
+//unsigned long getRunTimeCounterValue(void);
 #endif //FLY_V4_CPU_STATICS_H
